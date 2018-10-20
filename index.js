@@ -45,10 +45,12 @@ try {
         let result1 = await pool.request()
           .input('IDAFILIADO', sql.VarChar(20), (solicitud.params.idafiliado) ? solicitud.params.idafiliado : "")
           .query("SELECT * FROM AFI")
-
-        return respuesta.status(200).send(result1).end();
+        sql.close();
+        return respuesta.status('200').send(JSON.stringify({ success: true, result: result1 })).end();
+        // return respuesta.status(200).send(result1).end();
       } catch (err) {
-        return respuesta.status(500).send(err).end();
+        return respuesta.status('500').send(JSON.stringify({ success: false, error: err })).end();
+        // return respuesta.status(500).send(err).end();
       }
     })()
     // return respuesta.status(200).send("Listado de Afiliados").end()

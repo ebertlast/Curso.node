@@ -21,6 +21,7 @@
   "dependencies": {
     "cors": "^2.8.4",
     "express": "^4.16.4",
+    "morgan": "^1.9.1",
     "mssql": "^4.2.2"
   }
 }

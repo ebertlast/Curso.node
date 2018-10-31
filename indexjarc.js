@@ -1,9 +1,11 @@
 
+//modulos requeridos
 const express = require('express');
 //const morgan = require('morgan');
 const cors = require('cors');
 const app = express();
 
+//configuraciones
 app.use(cors());
 //app.use(morgan('dev'));
 
@@ -23,9 +25,31 @@ app.get('/', function(req , res){
         try {
             let pool = await sql.connect(config)
             let result = await pool.request()
-            .input('USUARIO', sql.VarChar, 'JRIOS')
+            //.input('USUARIO', sql.VarChar, 'JRIOS')
             // .query('SELECT * FROM USUSU WHERE USUARIO= @USUARIO')
             .query('SELECT * FROM USUSU ')
+            
+            console.dir("Resultado: "+ JSON.stringify({ success: true, result: result.recordset }))
+            res.end(JSON.stringify({ success: true, result: result.recordset }));
+        } catch (err) {
+            console.error("Error: "+err)
+        } finally{
+            sql.close();
+        }
+    })() 
+})
+
+
+app.get('/users/:usuario?', function(req , res){
+    console.log('Hola Mundo JS, peticion de la ruta /users/: '+ req.url);
+    (async function () {
+        try {
+            console.log('parametro recibido ', req.params);
+            
+            let pool = await sql.connect(config)
+            let result = await pool.request()
+            .input('USUARIO', sql.VarChar, (req.params.usuario) ? req.params.usuario : "%")
+            .query('SELECT * FROM USUSU WHERE USUARIO LIKE @USUARIO')
             
             console.dir("Resultado: "+ JSON.stringify({ success: true, result: result.recordset }))
             res.end(JSON.stringify({ success: true, result: result.recordset }));
